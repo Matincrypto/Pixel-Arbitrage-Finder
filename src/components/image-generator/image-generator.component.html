@@ -1,0 +1,59 @@
+
+<div class="space-y-8 max-w-4xl mx-auto">
+  <div class="pixel-border-inset p-4 sm:p-6 bg-black/50">
+    <h2 class="text-xl md:text-2xl text-yellow-300 mb-4">IMAGE GENERATOR</h2>
+    <p class="text-xs sm:text-sm text-cyan-300 mb-6">
+      Craft a prompt and let the Pixel Arb AI generate a unique, retro-themed image. The AI will automatically add a pixel-art, vaporwave aesthetic to your creation.
+    </p>
+
+    <form [formGroup]="imageForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div>
+        <label for="prompt" class="block mb-2 text-sm">PROMPT_</label>
+        <textarea formControlName="prompt" id="prompt" rows="3" class="w-full p-2 bg-gray-900 border-2 border-cyan-700 focus:border-yellow-300 focus:outline-none focus:ring-0 text-cyan-300"></textarea>
+      </div>
+
+      <div>
+        <label class="block mb-2 text-sm">ASPECT RATIO_</label>
+        <div class="flex flex-col sm:flex-row gap-4">
+          @for (ratio of ['1:1', '16:9', '9:16']; track ratio) {
+            <label class="flex items-center space-x-2 cursor-pointer p-2 pixel-border-inset bg-black/50 hover:bg-fuchsia-900/50">
+                <input type="radio" formControlName="aspectRatio" [value]="ratio" class="hidden peer">
+                <span class="w-4 h-4 border-2 border-cyan-400 peer-checked:bg-yellow-300"></span>
+                <span class="peer-checked:text-yellow-300">{{ ratio === '1:1' ? 'Square' : (ratio === '16:9' ? 'Widescreen' : 'Portrait') }} ({{ratio}})</span>
+            </label>
+          }
+        </div>
+      </div>
+
+      <button type="submit" [disabled]="isLoading() || imageForm.invalid" class="pixel-border p-3 text-fuchsia-400 bg-black/50 hover:bg-fuchsia-900/50 disabled:opacity-50 disabled:cursor-wait transition-colors w-full sm:w-auto">
+        @if (isLoading()) {
+          <span>GENERATING IMAGE...</span>
+        } @else {
+          <span>GENERATE_</span>
+        }
+      </button>
+    </form>
+  </div>
+
+  @if (isLoading() || generatedImage() || error()) {
+    <div class="pixel-border-inset p-4 sm:p-6 bg-black/50 min-h-[300px] flex items-center justify-center">
+        @if (isLoading()) {
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-2">
+                    <div class="w-2 h-4 bg-cyan-400 animate-pulse"></div>
+                    <div class="w-2 h-4 bg-cyan-400 animate-pulse [animation-delay:0.2s]"></div>
+                    <div class="w-2 h-4 bg-cyan-400 animate-pulse [animation-delay:0.4s]"></div>
+                </div>
+                <p class="mt-2">AI is rendering pixels...</p>
+            </div>
+        } @else if (error()) {
+            <div class="text-center text-red-500">
+                <h3 class="text-lg mb-2">[ GENERATION FAILED ]</h3>
+                <p class="text-sm">{{ error() }}</p>
+            </div>
+        } @else if (generatedImage()) {
+            <img [src]="generatedImage()" alt="AI generated image" class="max-w-full max-h-[512px] pixel-border-inset"/>
+        }
+    </div>
+  }
+</div>

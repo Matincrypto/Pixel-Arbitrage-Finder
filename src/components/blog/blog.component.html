@@ -1,0 +1,39 @@
+
+<div class="space-y-8 max-w-4xl mx-auto">
+  <div class="flex justify-between items-center">
+      <h2 class="text-xl md:text-2xl text-yellow-300">AI-POWERED BLOG</h2>
+      <button (click)="fetchNewPost()" [disabled]="isLoading()" class="pixel-border p-2 text-fuchsia-400 bg-black/50 hover:bg-fuchsia-900/50 disabled:opacity-50 disabled:cursor-wait transition-colors text-xs">
+        FETCH NEW POST_
+      </button>
+  </div>
+  
+  <div class="pixel-border-inset p-4 sm:p-6 bg-black/50 min-h-[500px]">
+    @if (isLoading()) {
+      <div class="flex flex-col items-center justify-center h-full">
+          <div class="flex items-center justify-center space-x-2">
+              <div class="w-2 h-4 bg-cyan-400 animate-pulse"></div>
+              <div class="w-2 h-4 bg-cyan-400 animate-pulse [animation-delay:0.2s]"></div>
+              <div class="w-2 h-4 bg-cyan-400 animate-pulse [animation-delay:0.4s]"></div>
+          </div>
+          <p class="mt-2">Pixel Arb AI is writing the latest post...</p>
+      </div>
+    } @else if (error()) {
+        <div class="text-center text-red-500 h-full flex flex-col justify-center">
+            <h3 class="text-lg mb-2">[ FAILED TO LOAD POST ]</h3>
+            <p class="text-sm">{{ error() }}</p>
+        </div>
+    } @else if (blogPost(); as post) {
+      <article class="space-y-6">
+        <h3 class="text-2xl text-yellow-300">{{ post.title }}</h3>
+        
+        @if(post.image) {
+          <img [src]="post.image" [alt]="post.title" class="w-full pixel-border-inset" />
+        }
+
+        <p class="text-sm sm:text-base whitespace-pre-wrap leading-relaxed text-cyan-300">
+            {{ post.body }}
+        </p>
+      </article>
+    }
+  </div>
+</div>

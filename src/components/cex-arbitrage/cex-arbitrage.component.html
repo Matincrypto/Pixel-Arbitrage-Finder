@@ -43,7 +43,7 @@
           } @empty {
             <tr class="border-b border-cyan-900">
                 <td colspan="7" class="p-4 text-center text-gray-500">
-                    Awaiting signals from the network...
+                    <span class="animate-pulse">SCANNING CEX FEEDS FOR SIGNALS...</span>
                 </td>
             </tr>
           }
@@ -64,7 +64,7 @@
 
   @if (isLoading() || aiAnalysis()) {
     <div class="pixel-border-inset p-4 bg-black/50 min-h-[150px]">
-      <h3 class="text-lg mb-4 text-yellow-300">AI REPORT:</h3>
+      <h3 class="text-lg mb-4 text-yellow-300 animate-pulse">AI REPORT:</h3>
       @if (isLoading()) {
         <div class="flex items-center space-x-2">
           <div class="w-2 h-4 bg-cyan-400 animate-pulse"></div>

@@ -1,6 +1,4 @@
 
-
-
 <div class="space-y-8">
   <div class="pixel-border-inset p-4 bg-black/50">
     <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-4">
@@ -24,17 +22,49 @@
           <tr class="border-b-2 border-cyan-500">
             <th class="p-2">PLATFORM</th>
             <th class="p-2">PAIR</th>
-            <th class="p-2 text-right">LIQUIDITY (USD)</th>
-            <th class="p-2 text-right">APY %</th>
+            <th class="p-2 text-right">
+                <button (click)="setSort('liquidity')" class="font-bold hover:text-yellow-300 transition-colors">
+                    LIQUIDITY (USD)
+                    @if (sortKey() === 'liquidity') {
+                        <span>{{ sortDirection() === 'desc' ? '▼' : '▲' }}</span>
+                    }
+                    <span class="relative group">
+                        <span class="text-cyan-400 ml-1">(?)</span>
+                        <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 text-xs bg-black pixel-border-inset text-left font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                            Total value of assets locked in the pool. Higher liquidity means less price impact (slippage) for large trades, crucial for successful arbitrage.
+                        </span>
+                    </span>
+                </button>
+            </th>
+            <th class="p-2 text-right">
+                 <button (click)="setSort('apy')" class="font-bold hover:text-yellow-300 transition-colors">
+                    APY %
+                    @if (sortKey() === 'apy') {
+                        <span>{{ sortDirection() === 'desc' ? '▼' : '▲' }}</span>
+                    }
+                     <span class="relative group">
+                        <span class="text-cyan-400 ml-1">(?)</span>
+                        <span class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-2 text-xs bg-black pixel-border-inset text-left font-normal opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+                            Annual Percentage Yield from fees. While not direct arbitrage profit, high APY can indicate a highly active (and potentially volatile) pool.
+                        </span>
+                    </span>
+                </button>
+            </th>
           </tr>
         </thead>
         <tbody>
-          @for (pool of dexPools(); track $index) {
+          @for (pool of sortedDexPools(); track $index) {
             <tr class="border-b border-cyan-900">
               <td class="p-2 font-bold">{{ pool.platform }}</td>
               <td class="p-2">{{ pool.pair }}</td>
               <td class="p-2 text-right">{{ formatLiquidity(pool.liquidity) }}</td>
               <td class="p-2 text-right">{{ pool.apy.toFixed(2) }}%</td>
+            </tr>
+          } @empty {
+             <tr class="border-b border-cyan-900">
+                <td colspan="4" class="p-4 text-center text-gray-500">
+                    <span class="animate-pulse">SCANNING DEX PROTOCOLS FOR LIQUIDITY POOLS...</span>
+                </td>
             </tr>
           }
         </tbody>
@@ -42,25 +72,32 @@
     </div>
   </div>
 
-  <div>
-    <button (click)="analyzeData()" [disabled]="isLoading()" class="pixel-border p-3 text-fuchsia-400 bg-black/50 hover:bg-fuchsia-900/50 disabled:opacity-50 disabled:cursor-wait transition-colors w-full sm:w-auto">
+  <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+    <button (click)="analyzeData()" [disabled]="isLoading() || sortedDexPools().length === 0" class="pixel-border p-3 text-fuchsia-400 bg-black/50 hover:bg-fuchsia-900/50 disabled:opacity-50 disabled:cursor-wait transition-colors w-full sm:w-auto">
       @if (isLoading()) {
         <span>ANALYZING...</span>
       } @else {
-        <span>RUN AI ANALYSIS_</span>
+        <span>{{ isDeepAnalysis() ? 'RUN DEEP AI ANALYSIS_' : 'RUN AI ANALYSIS_' }}</span>
       }
     </button>
+
+    <div class="flex items-center space-x-2">
+        <label for="deep-analysis-toggle" class="text-sm cursor-pointer">{{ isDeepAnalysis() ? 'DEEP ANALYSIS: ON' : 'DEEP ANALYSIS: OFF' }}</label>
+        <button (click)="toggleDeepAnalysis()" id="deep-analysis-toggle" class="relative w-12 h-6 rounded-full transition-colors" [class.bg-green-600]="isDeepAnalysis()" [class.bg-gray-700]="!isDeepAnalysis()">
+            <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform" [class.translate-x-6]="isDeepAnalysis()"></span>
+        </button>
+    </div>
   </div>
 
   @if (isLoading() || aiAnalysis()) {
     <div class="pixel-border-inset p-4 bg-black/50 min-h-[150px]">
-      <h3 class="text-lg mb-4 text-yellow-300">AI REPORT:</h3>
+      <h3 class="text-lg mb-4 text-yellow-300 animate-pulse">AI REPORT:</h3>
        @if (isLoading()) {
         <div class="flex items-center space-x-2">
           <div class="w-2 h-4 bg-cyan-400 animate-pulse"></div>
           <div class="w-2 h-4 bg-cyan-400 animate-pulse [animation-delay:0.2s]"></div>
           <div class="w-2 h-4 bg-cyan-400 animate-pulse [animation-delay:0.4s]"></div>
-          <p>Pixel Arb AI is processing liquidity data...</p>
+          <p>Pixel Arb AI is processing liquidity data{{ isDeepAnalysis() ? ' with deep strategic modeling' : '' }}...</p>
         </div>
       }
       @if (aiAnalysis()) {
