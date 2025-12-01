@@ -1,0 +1,30 @@
+<div class="min-h-screen bg-[#0d0d0d] p-4 sm:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-8 pixel-border bg-black/50 p-4">
+      <nav class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+        <h1 class="text-2xl lg:text-3xl text-center">
+          <a routerLink="/" class="hover:text-yellow-300 transition-colors duration-200">[ P1XEL ARB1TRAGE ]</a>
+        </h1>
+        <div class="flex space-x-4 text-sm sm:text-base">
+          <a routerLink="/cex-opportunities" routerLinkActive="text-yellow-300" [routerLinkActiveOptions]="{exact: true}" class="hover:text-yellow-300 transition-colors duration-200">&lt;CEX&gt;</a>
+          <a routerLink="/dex-liquidity" routerLinkActive="text-yellow-300" [routerLinkActiveOptions]="{exact: true}" class="hover:text-yellow-300 transition-colors duration-200">&lt;DEX&gt;</a>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <router-outlet></router-outlet>
+    </main>
+
+    <footer class="mt-16">
+       <div class="pixel-border bg-black/50 p-6">
+        <h3 class="text-center text-yellow-300 text-lg mb-4">[ SYSTEM STATUS ]</h3>
+        <div class="text-center text-xs text-gray-400 space-y-2">
+           <p>PIXEL ARBITRAGE // MISSION: DEMYSTIFYING MARKET INEFFICIENCIES THROUGH DATA AND AI.</p>
+           <p>AI CORE: ONLINE // POWERED BY PIXEL ARB</p>
+           <p>All market data is simulated for demonstration purposes. Not financial advice.</p>
+        </div>
+       </div>
+    </footer>
+  </div>
+</div>
